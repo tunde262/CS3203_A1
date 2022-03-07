@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW 1</title>
+</head>
+<body>
+    <h1>Get the details of tweet</h1>
+    <form action="http://127.0.0.1:3000/detail" method="GET">
+        <label>Tweet ID:</label>
+        <input type="text" id="get_input" name="tweet_id" />
+        <button type="button" onclick="getTweet()">Send to backend</button>
+    </form>
+    <ul id="detail">
+
+    </ul>
+
+    <h1>Delete a tweet</h1>
+    <form action="http://127.0.0.1:3000/delete" method="POST">
+        <label>Tweet ID:</label>
+        <input type="text" name="tweet_id" />
+        <button type="submit" onclick="(e) => e.preventDefault()">Send to backend</button>
+    </form>
+    <h1>Update a screen_name</h1>
+    <form action="http://127.0.0.1:3000/update" method="POST">
+        <label>Name:</label>
+        <input type="text" name="name" />
+        <label>New screen_name:</label>
+        <input type="text" name="screen_name" />
+        <button type="submit" onclick="(e) => e.preventDefault()">Send to backend</button>
+    </form>
+    <h1>Create a tweet</h1>
+    <form action="http://127.0.0.1:3000/create" method="POST">
+        <label>New Tweet Text:</label>
+        <input type="text" name="text" />
+        <label>New Tweet ID:</label>
+        <input type="text" name="tweet_id" />
+        <button type="submit" onclick="(e) => e.preventDefault()">Send to backend</button>
+    </form>
+    <h1>Get all tweets (see console for accurate list):</h1>
+    <ul id="tweets">
+
+    </ul>
+</body>
+
+<script>
+
+    function getTweet() {
+
+        var tweetInfo = document.getElementById("get_input").value
+
+        console.log('TWEET ID!!!');
+        console.log(tweetInfo);
+
+        fetch(`http://127.0.0.1:3000/${tweetInfo}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('TWEET DATA!!!');
+                console.log(data);
+                
+                var ul = document.getElementById("detail");
+
+                // Display tweet text
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(data.text));
+
+                // Display Creation Date
+                var ul2 = document.createElement("ul");
+                var li2 = document.createElement("li");
+                li2.appendChild(document.createTextNode('Create Time: ' +data.created_at));
+
+                ul2.appendChild(li2);
+
+                li.appendChild(ul2);
+
+                ul.appendChild(li);
+            })
+    }
+
+
+    const tweetContainer = document.querySelector('#tweets');
+
+    fetch('http://127.0.0.1:3000/data')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+
+            data.forEach(tweetData => {
+                var ul = document.getElementById("tweets");
+
+                // Display tweet text
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(tweetData.text));
+                
+
+                // Display Creation Date
+                var ul2 = document.createElement("ul");
+                var li2 = document.createElement("li");
+                li2.appendChild(document.createTextNode('Create Time: ' +tweetData.created_at));
+
+                ul2.appendChild(li2);
+
+                li.appendChild(ul2);
+
+                // Display Tweet ID
+                var li3 = document.createElement("li");
+                li3.appendChild(document.createTextNode('ID: ' + tweetData.id));
+
+                ul2.appendChild(li3);
+
+                li.appendChild(ul2);
+
+                ul.appendChild(li);
+
+                // Display Name
+                var li4 = document.createElement("li");
+                li4.appendChild(document.createTextNode('Name: ' + tweetData.user.name));
+
+                ul2.appendChild(li4);
+
+                li.appendChild(ul2);
+
+                ul.appendChild(li);
+
+                // Display screen_name
+                var li4 = document.createElement("li");
+                li4.appendChild(document.createTextNode('Screen_Name: ' + tweetData.user.screen_name));
+
+                ul2.appendChild(li4);
+
+                li.appendChild(ul2);
+
+                ul.appendChild(li);
+            });
+        })
+</script>
+</html>
